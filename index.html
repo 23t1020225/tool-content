@@ -1,0 +1,1721 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEO Content Engine v2.0</title>
+<style>
+:root {
+  --bg-primary: #0f1117;
+  --bg-secondary: #1a1d27;
+  --bg-card: #21242f;
+  --bg-input: #2a2d3a;
+  --bg-hover: #2f3345;
+  --border: #353849;
+  --border-focus: #6366f1;
+  --text-primary: #e8eaed;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  --accent: #6366f1;
+  --accent-hover: #818cf8;
+  --accent-glow: rgba(99,102,241,.25);
+  --green: #22c55e;
+  --green-bg: rgba(34,197,94,.12);
+  --orange: #f59e0b;
+  --orange-bg: rgba(245,158,11,.12);
+  --red: #ef4444;
+  --red-bg: rgba(239,68,68,.12);
+  --cyan: #06b6d4;
+  --radius: 10px;
+  --shadow: 0 4px 24px rgba(0,0,0,.35);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+/* SCROLLBAR */
+::-webkit-scrollbar { width:6px; height:6px; }
+::-webkit-scrollbar-track { background:var(--bg-secondary); }
+::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+::-webkit-scrollbar-thumb:hover { background:var(--text-muted); }
+
+/* HEADER */
+.header {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, #1e1b4b 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 20px 0;
+  position: sticky; top:0; z-index:100;
+}
+.header-inner {
+  max-width: 1200px; margin:0 auto; padding:0 24px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.logo { display:flex; align-items:center; gap:12px; }
+.logo-icon {
+  width:42px; height:42px; border-radius:10px;
+  background: linear-gradient(135deg, var(--accent), #a855f7);
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px; font-weight:800; color:#fff;
+}
+.logo h1 { font-size:20px; font-weight:700; }
+.logo span { font-size:12px; color:var(--text-secondary); display:block; margin-top:2px; }
+.header-badge {
+  background: var(--green-bg); color: var(--green);
+  padding: 4px 12px; border-radius: 20px; font-size:12px; font-weight:600;
+  border: 1px solid rgba(34,197,94,.2);
+}
+
+/* LAYOUT */
+.container { max-width:1200px; margin:0 auto; padding:24px; }
+.layout { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+@media(max-width:1024px) { .layout { grid-template-columns:1fr; } }
+
+/* SECTIONS */
+.section {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.section:hover { border-color: var(--bg-hover); }
+.section-header {
+  padding: 14px 18px;
+  display: flex; align-items: center; justify-content: space-between;
+  cursor: pointer; user-select: none;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  transition: background .2s;
+}
+.section-header:hover { background: var(--bg-hover); }
+.section-header h3 {
+  font-size: 14px; font-weight: 600;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-header .icon { font-size: 16px; }
+.section-header .chevron {
+  transition: transform .25s;
+  color: var(--text-muted); font-size: 12px;
+}
+.section.collapsed .section-header .chevron { transform: rotate(-90deg); }
+.section-body { padding: 18px; }
+.section.collapsed .section-body { display: none; }
+
+/* FORM ELEMENTS */
+label {
+  display: block; font-size: 12px; font-weight: 600;
+  color: var(--text-secondary); margin-bottom: 6px;
+  text-transform: uppercase; letter-spacing: .5px;
+}
+label .req { color: var(--red); margin-left:2px; }
+input[type="text"], input[type="number"], textarea, select {
+  width: 100%; padding: 10px 14px;
+  background: var(--bg-input); border: 1px solid var(--border);
+  border-radius: 8px; color: var(--text-primary);
+  font-size: 14px; font-family: inherit;
+  transition: border-color .2s, box-shadow .2s;
+  outline: none;
+}
+input:focus, textarea:focus, select:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+textarea { resize: vertical; min-height: 80px; }
+select { cursor: pointer; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%239ca3af' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center;
+  padding-right: 32px;
+}
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+.form-row-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-bottom:14px; }
+.form-group { margin-bottom: 14px; }
+.form-group:last-child { margin-bottom: 0; }
+
+/* TOGGLE */
+.toggle-row {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 0; border-bottom:1px solid var(--border);
+}
+.toggle-row:last-child { border-bottom:none; }
+.toggle-label { font-size:14px; color:var(--text-primary); font-weight:500; }
+.toggle-label small { display:block; color:var(--text-muted); font-size:12px; font-weight:400; }
+.toggle {
+  position:relative; width:44px; height:24px;
+  background:var(--bg-input); border-radius:12px;
+  cursor:pointer; transition:background .2s;
+  border: 1px solid var(--border);
+  flex-shrink:0;
+}
+.toggle.active { background:var(--accent); border-color:var(--accent); }
+.toggle::after {
+  content:''; position:absolute; top:3px; left:3px;
+  width:16px; height:16px; background:#fff;
+  border-radius:50%; transition:transform .2s;
+}
+.toggle.active::after { transform:translateX(20px); }
+
+/* DYNAMIC LIST */
+.dynamic-list { display:flex; flex-direction:column; gap:8px; }
+.dynamic-item {
+  display:flex; gap:8px; align-items:center;
+  background: var(--bg-input); padding:8px 10px;
+  border-radius:8px; border:1px solid var(--border);
+}
+.dynamic-item input { background:transparent; border:none; padding:4px; }
+.dynamic-item input:focus { box-shadow:none; }
+.dynamic-item .remove-btn {
+  background:none; border:none; color:var(--red);
+  cursor:pointer; font-size:18px; padding:0 4px;
+  opacity:.6; transition:opacity .2s;
+}
+.dynamic-item .remove-btn:hover { opacity:1; }
+.add-btn {
+  display:inline-flex; align-items:center; gap:6px;
+  background:none; border:1px dashed var(--border);
+  color:var(--accent); padding:8px 14px;
+  border-radius:8px; cursor:pointer; font-size:13px;
+  transition:all .2s; margin-top:4px;
+}
+.add-btn:hover { border-color:var(--accent); background:var(--accent-glow); }
+
+/* BUTTONS */
+.btn {
+  padding:12px 24px; border:none; border-radius:8px;
+  font-size:14px; font-weight:600; cursor:pointer;
+  transition:all .2s; font-family:inherit;
+  display:inline-flex; align-items:center; gap:8px;
+}
+.btn-primary {
+  background:linear-gradient(135deg, var(--accent), #8b5cf6);
+  color:#fff; box-shadow:0 4px 16px var(--accent-glow);
+}
+.btn-primary:hover {
+  transform:translateY(-1px);
+  box-shadow:0 6px 24px var(--accent-glow);
+}
+.btn-primary:active { transform:translateY(0); }
+.btn-secondary {
+  background:var(--bg-input); color:var(--text-primary);
+  border:1px solid var(--border);
+}
+.btn-secondary:hover { background:var(--bg-hover); border-color:var(--text-muted); }
+.btn-copy {
+  background:var(--green-bg); color:var(--green);
+  border:1px solid rgba(34,197,94,.2);
+}
+.btn-copy:hover { background:rgba(34,197,94,.2); }
+.btn-copy.copied { background:var(--green); color:#fff; }
+.btn-group { display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
+.btn-generate {
+  width:100%; padding:16px; font-size:16px;
+  text-align:center; justify-content:center;
+}
+
+/* OUTPUT */
+.output-panel { position:sticky; top:90px; }
+.output-tabs { display:flex; gap:4px; margin-bottom:12px; flex-wrap:wrap; }
+.tab-btn {
+  padding:8px 16px; border:1px solid var(--border);
+  background:var(--bg-secondary); color:var(--text-secondary);
+  border-radius:8px 8px 0 0; cursor:pointer; font-size:13px;
+  font-weight:500; transition:all .2s; font-family:inherit;
+}
+.tab-btn.active {
+  background:var(--bg-card); color:var(--accent);
+  border-bottom-color:var(--bg-card); font-weight:600;
+}
+.output-content {
+  background:var(--bg-card); border:1px solid var(--border);
+  border-radius:0 var(--radius) var(--radius) var(--radius);
+  min-height:400px; position:relative;
+}
+.output-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 16px; border-bottom:1px solid var(--border);
+  background:var(--bg-secondary);
+}
+.output-header h4 { font-size:13px; color:var(--text-secondary); }
+.output-body {
+  padding:16px; max-height:70vh; overflow-y:auto;
+}
+.output-body pre {
+  white-space:pre-wrap; word-break:break-word;
+  font-family:'Cascadia Code','Fira Code',monospace;
+  font-size:13px; line-height:1.7; color:var(--text-primary);
+}
+
+/* VIEW TOGGLE */
+.view-toggle {
+  display:inline-flex; background:var(--bg-input); border-radius:6px; padding:2px; border:1px solid var(--border);
+}
+.view-btn {
+  background:none; border:none; color:var(--text-secondary); padding:4px 10px; font-size:12px; font-weight:600;
+  border-radius:4px; cursor:pointer; font-family:inherit; transition:all .2s;
+}
+.view-btn.active {
+  background:var(--accent); color:#fff;
+}
+
+/* GOOGLE DOCS & EXPORT BUTTONS */
+.btn-gdocs {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff; border: 1px solid rgba(37,99,235,.4);
+  padding: 5px 12px; font-size: 12px; font-weight: 600;
+  border-radius: 6px; cursor: pointer; display: inline-flex;
+  align-items: center; gap: 5px; font-family: inherit; transition: all .2s;
+}
+.btn-gdocs:hover {
+  background: linear-gradient(135deg, #1d4ed8, #1e40af);
+  transform: translateY(-1px); box-shadow: 0 4px 12px rgba(37,99,235,.35);
+}
+.btn-doc-download {
+  background: var(--bg-input); color: var(--text-primary);
+  border: 1px solid var(--border); padding: 5px 12px; font-size: 12px; font-weight: 600;
+  border-radius: 6px; cursor: pointer; display: inline-flex;
+  align-items: center; gap: 5px; font-family: inherit; transition: all .2s;
+}
+.btn-doc-download:hover {
+  background: var(--bg-hover); border-color: var(--text-muted);
+}
+
+/* RENDERED ARTICLE TYPOGRAPHY */
+.rendered-article {
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  line-height:1.8; color:#cbd5e1; font-size:14px;
+}
+.rendered-article .art-h1 {
+  font-size:22px; font-weight:800; color:#fff; line-height:1.4;
+  margin:20px 0 16px 0; padding-bottom:8px; border-bottom:2px solid var(--accent);
+  display:flex; align-items:center; gap:8px;
+}
+.rendered-article .art-h1 .tag {
+  background:linear-gradient(135deg, var(--accent), #8b5cf6);
+  color:#fff; font-size:11px; font-weight:700; padding:2px 8px; border-radius:4px;
+}
+.rendered-article .art-h2 {
+  font-size:17px; font-weight:700; color:#f8fafc;
+  margin:28px 0 12px 0; padding:8px 12px;
+  background:linear-gradient(90deg, #1e1b4b 0%, rgba(30,27,75,0.2) 100%);
+  border-left:4px solid var(--accent); border-radius:0 6px 6px 0;
+  display:flex; align-items:center; gap:8px;
+}
+.rendered-article .art-h2 .tag {
+  background:var(--accent); color:#fff; font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px;
+}
+.rendered-article .art-h3 {
+  font-size:14.5px; font-weight:600; color:#a5b4fc;
+  margin:18px 0 8px 0; display:flex; align-items:center; gap:6px;
+}
+.rendered-article .art-h3 .tag {
+  background:var(--border); color:#94a3b8; font-size:10px; font-weight:600; padding:1px 5px; border-radius:3px;
+}
+.rendered-article p { margin-bottom:12px; }
+.rendered-article .art-img-box {
+  background:var(--bg-secondary); border:1px dashed #6366f1;
+  border-radius:8px; padding:14px; margin:16px 0; text-align:center;
+}
+.rendered-article .art-img-preview {
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  padding:16px; background:var(--bg-input); border-radius:6px; margin-bottom:8px;
+}
+.rendered-article .art-img-preview .icon { font-size:24px; }
+.rendered-article .art-img-alt { font-size:12.5px; color:#cbd5e1; }
+.rendered-article .art-img-caption {
+  font-size:13px; color:#818cf8; font-style:italic; font-weight:600;
+}
+.rendered-article blockquote {
+  background:rgba(99,102,241,.08); border-left:3px solid var(--accent);
+  padding:12px 16px; margin:16px 0; border-radius:0 6px 6px 0;
+  font-size:13.5px; color:#e0e7ff;
+}
+.rendered-article table {
+  width:100%; border-collapse:collapse; margin:18px 0; font-size:13px;
+}
+.rendered-article th {
+  background:#1e1b4b; color:#c7d2fe; font-weight:600;
+  padding:9px 12px; border:1px solid var(--border); text-align:left;
+}
+.rendered-article td {
+  padding:8px 12px; border:1px solid var(--border);
+}
+.rendered-article tr:nth-child(even) td { background:rgba(255,255,255,.02); }
+.rendered-article a { color:#818cf8; text-decoration:underline; }
+.output-placeholder {
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  min-height:300px; color:var(--text-muted);
+  text-align:center; padding:40px;
+}
+.output-placeholder .big-icon { font-size:48px; margin-bottom:16px; opacity:.4; }
+.output-placeholder p { font-size:14px; }
+
+/* STATS BAR */
+.stats-bar {
+  display:flex; gap:16px; padding:12px 16px;
+  background:var(--bg-secondary); border-top:1px solid var(--border);
+  flex-wrap:wrap;
+}
+.stat { display:flex; align-items:center; gap:6px; font-size:12px; }
+.stat-value { font-weight:700; color:var(--accent); }
+.stat-label { color:var(--text-muted); }
+
+/* GOOD PHRASE ITEM */
+.phrase-item {
+  display:grid; grid-template-columns:1fr 80px 32px; gap:8px; align-items:center;
+  background:var(--bg-input); padding:8px 10px;
+  border-radius:8px; border:1px solid var(--border);
+}
+.phrase-item input[type="number"] {
+  width:100%; text-align:center; padding:6px;
+}
+.phrase-item input[type="text"] { background:transparent; border:none; padding:6px; }
+
+/* LINK ITEM */
+.link-item {
+  display:grid; grid-template-columns:1fr 1fr 32px; gap:8px; align-items:center;
+  background:var(--bg-input); padding:8px 10px;
+  border-radius:8px; border:1px solid var(--border);
+}
+.link-item input { background:transparent; border:none; padding:6px; }
+
+/* PRESET CHIPS */
+.chip-group { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
+.chip {
+  padding:5px 12px; border-radius:20px; font-size:12px;
+  border:1px solid var(--border); background:var(--bg-input);
+  color:var(--text-secondary); cursor:pointer;
+  transition:all .15s; font-family:inherit;
+}
+.chip:hover, .chip.active {
+  border-color:var(--accent); color:var(--accent);
+  background:var(--accent-glow);
+}
+
+/* HELP TEXT */
+.help { font-size:11px; color:var(--text-muted); margin-top:4px; }
+
+/* TOAST */
+.toast {
+  position:fixed; bottom:24px; right:24px;
+  background:var(--green); color:#fff;
+  padding:12px 20px; border-radius:8px;
+  font-size:14px; font-weight:600;
+  box-shadow:0 8px 32px rgba(0,0,0,.4);
+  transform:translateY(100px); opacity:0;
+  transition:all .3s ease;
+  z-index:9999;
+}
+.toast.show { transform:translateY(0); opacity:1; }
+
+/* RESPONSIVE */
+@media(max-width:768px) {
+  .form-row, .form-row-3 { grid-template-columns:1fr; }
+  .container { padding:12px; }
+  .header-inner { flex-direction:column; gap:8px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">S</div>
+      <div>
+        <h1>SEO Content Engine</h1>
+        <span>v2.0 — Multi-Agent Prompt Generator</span>
+      </div>
+    </div>
+    <div class="header-badge">● vGOD SENIOR 2026</div>
+  </div>
+</div>
+
+<div class="container">
+<div class="layout">
+
+<!-- ===== LEFT: INPUT FORM ===== -->
+<div class="form-panel">
+
+  <!-- SECTION 1: BASIC INFO -->
+  <div class="section" id="sec-basic">
+    <div class="section-header" onclick="toggleSection('sec-basic')">
+      <h3><span class="icon">📌</span> Thông tin cơ bản</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body">
+      <div class="form-group">
+        <label>Keyword chính <span class="req">*</span></label>
+        <input type="text" id="kw-main" placeholder="VD: khuyến mãi go88">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Brand <span class="req">*</span></label>
+          <input type="text" id="brand" placeholder="VD: Go88">
+        </div>
+        <div class="form-group">
+          <label>Loại brand</label>
+          <input type="text" id="brand-type" placeholder="VD: Cổng game, Nhà cái">
+        </div>
+      </div>
+      <div class="form-row-3">
+        <div class="form-group">
+          <label>Số từ mục tiêu</label>
+          <div class="chip-group">
+            <button class="chip" onclick="setWordCount(1500, event)">1500</button>
+            <button class="chip active" onclick="setWordCount(3000, event)">3000</button>
+            <button class="chip" onclick="setWordCount(5000, event)">5000</button>
+          </div>
+          <input type="number" id="word-count" value="3000" min="500" max="10000">
+        </div>
+        <div class="form-group">
+          <label>Năm</label>
+          <input type="number" id="year" value="2026" min="2024" max="2030">
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select id="category">
+            <option value="POST">POST (Bài viết)</option>
+            <option value="PAGE">PAGE (Trang)</option>
+            <option value="PILLAR">PILLAR (Trụ cột)</option>
+            <option value="HUB">HUB (Hub page)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Search Intent</label>
+          <select id="intent">
+            <option value="Transactional">Transactional (Giao dịch)</option>
+            <option value="Informational">Informational (Thông tin)</option>
+            <option value="Commercial">Commercial Investigation</option>
+            <option value="Navigational">Navigational (Điều hướng)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Tone giọng văn</label>
+          <select id="tone">
+            <option value="Thực chiến / Cộng đồng / Phân tích">Thực chiến + Cộng đồng + Phân tích</option>
+            <option value="Thực chiến / Cộng đồng">Thực chiến + Cộng đồng</option>
+            <option value="Phân tích / Chuyên gia">Phân tích + Chuyên gia</option>
+            <option value="Hướng dẫn / Thực chiến">Hướng dẫn + Thực chiến</option>
+            <option value="Hướng dẫn / Phân tích">Hướng dẫn + Phân tích</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>META ĐỀ XUẤT</label>
+        <textarea id="meta-suggest" rows="2" placeholder="Nhập Meta Description đề xuất..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>H1 THAM KHẢO VÀ HƯỚNG ĐI CỦA BÀI</label>
+        <textarea id="h1-direction" rows="3" placeholder="VD: H1 cần tập trung vào... Hướng đi của bài là..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: KEYWORDS -->
+  <div class="section" id="sec-keywords">
+    <div class="section-header" onclick="toggleSection('sec-keywords')">
+      <h3><span class="icon">🔑</span> Cấu trúc từ khóa</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body">
+      <div class="form-group">
+        <label>Từ khóa phụ</label>
+        <textarea id="kw-secondary" rows="3" placeholder="Mỗi dòng 1 từ khóa"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Long tail keyword</label>
+        <textarea id="kw-longtail" rows="3" placeholder="Mỗi dòng 1 từ khóa"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Semantic keyword</label>
+        <textarea id="kw-semantic" rows="3" placeholder="Mỗi dòng 1 từ khóa"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Entity: chính / phụ / bằng chứng</label>
+        <textarea id="kw-entity" rows="3" placeholder="Nhập entity..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Good phrase bắt buộc - Rất quan trọng (từ 70% top 10)</label>
+        <textarea id="kw-good-phrase" rows="3" placeholder="Các cụm từ bắt buộc phải có..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Cụm nên có (40 đến 69% top 10)</label>
+        <textarea id="kw-cum-nen-co" rows="3" placeholder="Các cụm từ nên xuất hiện..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: OUTLINE -->
+  <div class="section" id="sec-outline">
+    <div class="section-header" onclick="toggleSection('sec-outline')">
+      <h3><span class="icon">📋</span> Outline & Yêu cầu</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body">
+      <div class="form-group">
+        <label>Brief gợi ý (H2 + lưu ý)</label>
+        <textarea id="outline" rows="8" placeholder="Dàn ý H2 và các lưu ý từng phần..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>VỊ TRÍ ĐẶT TITLE ẢNH</label>
+        <textarea id="img-placement" rows="3" placeholder="Quy định vị trí và cách đặt thẻ ALT, Title ảnh..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>YC VỀ NỘI DUNG BẢNG</label>
+        <textarea id="table-req" rows="3" placeholder="Yêu cầu cụ thể cho các bảng trong bài..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Giọng viết và xưng hô (human-write)</label>
+        <textarea id="human-write" rows="3" placeholder="VD: Xưng tôi - bạn, giọng chia sẻ thực chiến..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>LUẬT ĐỂ NÉ VĂN AI</label>
+        <textarea id="anti-ai-rules" rows="3" placeholder="Không dùng các từ: Nhìn chung, Tóm lại, Ngoài ra..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>1 SỐ ĐIỀU DÍNH VÀO ĐIỀU CẤM MÀ PHẢI TRIỆT TIÊU KHI VIẾT BÀI</label>
+        <textarea id="taboo-rules" rows="3" placeholder="VD: Không nhắc đến việc lừa đảo, không cam kết thắng 100%..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: COMPONENTS -->
+  <div class="section" id="sec-components">
+    <div class="section-header" onclick="toggleSection('sec-components')">
+      <h3><span class="icon">🧩</span> Components & Tùy chọn</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body">
+      <div class="toggle-row">
+        <div class="toggle-label">
+          Bảng so sánh / Tổng hợp
+          <small>Bảng markdown tối đa 4 cột, 6-7 hàng</small>
+        </div>
+        <div class="toggle active" id="tog-table" onclick="toggleSwitch(this)"></div>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-label">
+          FAQ Section
+          <small>Mỗi câu hỏi = 1 H3, trả lời 2-4 câu</small>
+        </div>
+        <div class="toggle active" id="tog-faq" onclick="toggleSwitch(this)"></div>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-label">
+          Step Guide (Hướng dẫn từng bước)
+          <small>5-6 bước, mỗi bước ≥2 câu + warning</small>
+        </div>
+        <div class="toggle" id="tog-step" onclick="toggleSwitch(this)"></div>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-label">
+          Answer-First / Verdict Card
+          <small>Tóm tắt 60-80 từ ngay sau H1 — tối ưu AIO</small>
+        </div>
+        <div class="toggle active" id="tog-aio" onclick="toggleSwitch(this)"></div>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-label">
+          Responsible Gambling Notice
+          <small>Cảnh báo chơi có trách nhiệm — E-E-A-T trust signal</small>
+        </div>
+        <div class="toggle active" id="tog-rg" onclick="toggleSwitch(this)"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: INTERNAL LINKS -->
+  <div class="section" id="sec-links">
+    <div class="section-header" onclick="toggleSection('sec-links')">
+      <h3><span class="icon">🔗</span> Internal Links</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body">
+      <div class="dynamic-list" id="links-list">
+        <!-- Dynamic link items -->
+      </div>
+      <button class="add-btn" onclick="addLink()">+ Thêm Internal Link</button>
+      <div class="help" style="margin-top:8px;">Anchor text → URL slug. Mỗi link chèn 1 lần duy nhất tại vị trí contextual nhất.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 6: DOMAIN KNOWLEDGE -->
+  <div class="section" id="sec-knowledge">
+    <div class="section-header" onclick="toggleSection('sec-knowledge')">
+      <h3><span class="icon">🧠</span> Domain Knowledge & Data thật</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body">
+      <div class="form-group">
+        <label>Thông tin KM / Dữ liệu brand (data thật)</label>
+        <textarea id="domain-knowledge" rows="6" placeholder="VD:&#10;- Thưởng nạp đầu: 100%, tối đa 588K, vòng cược 5x&#10;- Hoàn trả: 1.2% mỗi ngày, không giới hạn&#10;- VIP: 5 cấp bậc, cashback từ 0.5% đến 2%&#10;- Giftcode: nhập tại mục Ưu đãi, mỗi code dùng 1 lần"></textarea>
+        <div class="help">⚠️ QUAN TRỌNG: Điền data thật ở đây. AI sẽ KHÔNG bịa số liệu — chỉ dùng dữ liệu bạn cung cấp.</div>
+      </div>
+      <div class="form-group">
+        <label>Yêu cầu khác</label>
+        <textarea id="extra-req" rows="3" placeholder="VD: Schema Article, không viết 'nhận thưởng không điều kiện'..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 7: AI AUTO-WRITER (GEMINI API) -->
+  <div class="section" id="sec-ai">
+    <div class="section-header" onclick="toggleSection('sec-ai')">
+      <h3><span class="icon">🤖</span> Tự động viết bằng Gemini AI (Tùy chọn)</h3>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body">
+      <div class="form-group">
+        <label>Gemini API Key (Lưu trên trình duyệt của bạn)</label>
+        <div style="display:flex; gap:8px;">
+          <textarea id="api-key" rows="3" style="width:100%; border:1px solid var(--border); border-radius:6px; padding:10px; font-family:monospace;" placeholder="AIzaSy...&#10;AIzaSy... (Nhập nhiều key, mỗi dòng 1 key)"></textarea>
+          <button type="button" class="btn btn-secondary" onclick="checkGeminiKey()" style="white-space:nowrap; padding:8px 12px; font-size:12px; height:fit-content;" title="Kiểm tra kết nối và quét các model tương thích">
+            🔍 Test Key
+          </button>
+        </div>
+        <div id="api-status-msg" style="margin-top:6px; font-size:12px; display:none;"></div>
+        <div class="help">Lấy key miễn phí tại <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--accent);text-decoration:underline;">Google AI Studio</a>. Nhập nhiều key (mỗi dòng 1 key) để hệ thống tự động xoay vòng khi bị nghẽn mạng!</div>
+      </div>
+      <!-- Model Selection Hidden: System automatically uses the best Gemini versions -->
+      <input type="hidden" id="gemini-model" value="gemini-1.5-pro-latest">
+    </div>
+  </div>
+
+  <!-- GENERATE BUTTONS -->
+  <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:16px;">
+    <button class="btn btn-primary btn-generate" onclick="generatePrompt()">
+      ⚡ Tạo Prompt & Viết Bài Mẫu Ngay
+    </button>
+    <button class="btn btn-secondary" style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; justify-content:center; padding:13px; font-weight:700;" onclick="generateWithGeminiAI()">
+      🤖 Gọi Gemini AI Viết Trực Tiếp (Cần API Key)
+    </button>
+  </div>
+
+  <!-- SAVE/LOAD -->
+  <div class="btn-group" style="margin-bottom:20px;">
+    <button class="btn btn-secondary" onclick="saveConfig()">💾 Lưu Config</button>
+    <button class="btn btn-secondary" onclick="loadConfig()">📂 Load Config</button>
+    <button class="btn btn-secondary" onclick="resetForm()">🗑️ Reset</button>
+  </div>
+
+</div>
+
+<!-- ===== RIGHT: OUTPUT PANEL ===== -->
+<div class="output-panel">
+  <div class="output-tabs" id="output-tabs">
+    <button class="tab-btn active" onclick="switchTab('full')">📝 Full Prompt</button>
+    <button class="tab-btn" onclick="switchTab('article')">📄 Bài viết hoàn chỉnh</button>
+    <button class="tab-btn" onclick="switchTab('outline')">📋 Outline Agent</button>
+    <button class="tab-btn" onclick="switchTab('writer')">✍️ Writer Agent</button>
+    <button class="tab-btn" onclick="switchTab('qa')">🛡️ QA Agent</button>
+  </div>
+  <div class="output-content">
+    <div class="output-header">
+      <h4 id="output-title">Output — Chưa generate</h4>
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+        <div class="view-toggle" id="view-toggle" style="display:none;">
+          <button class="view-btn active" id="btn-view-preview" onclick="setViewMode('preview')">👁️ Định dạng Web</button>
+          <button class="view-btn" id="btn-view-raw" onclick="setViewMode('raw')">📋 Mã Markdown</button>
+        </div>
+        <button class="btn btn-gdocs" id="gdocs-btn" onclick="exportToGoogleDocs()" style="display:none;" title="Mở Google Docs mới và dán bài viết với đầy đủ H1, H2, H3">
+          <span>📄</span> Mở Google Docs
+        </button>
+        <button class="btn btn-doc-download" id="doc-download-btn" onclick="downloadDocFile()" style="display:none;" title="Tải file tài liệu .doc giữ nguyên H1, H2, H3">
+          <span>📥</span> Tải file .doc
+        </button>
+        <button class="btn btn-copy" id="copy-btn" onclick="copyOutput()" style="display:none;">📋 Copy</button>
+      </div>
+    </div>
+    <div class="output-body" id="output-body">
+      <div class="output-placeholder">
+        <div class="big-icon">✨</div>
+        <p>Điền thông tin bên trái rồi nhấn<br><strong>"Tạo Prompt SEO Content"</strong></p>
+        <p style="margin-top:8px;font-size:12px;color:var(--text-muted)">
+          Prompt sẽ được tối ưu tự động theo<br>
+          E-E-A-T + AIO + Anti-Hallucination
+        </p>
+      </div>
+    </div>
+    <div class="stats-bar" id="stats-bar" style="display:none;">
+      <div class="stat"><span class="stat-value" id="stat-chars">0</span><span class="stat-label">ký tự</span></div>
+      <div class="stat"><span class="stat-value" id="stat-words">0</span><span class="stat-label">từ prompt</span></div>
+      <div class="stat"><span class="stat-value" id="stat-h2">0</span><span class="stat-label">H2 sections</span></div>
+      <div class="stat"><span class="stat-value" id="stat-target">0</span><span class="stat-label">từ mục tiêu</span></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /layout -->
+</div><!-- /container -->
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script src="prompt-engine.js"></script>
+<script>
+// ===== UI LOGIC =====
+function toggleSection(id) {
+  document.getElementById(id).classList.toggle('collapsed');
+}
+
+function toggleSwitch(el) {
+  el.classList.toggle('active');
+}
+
+function isToggleOn(id) {
+  return document.getElementById(id).classList.contains('active');
+}
+
+function setWordCount(n, e) {
+  document.getElementById('word-count').value = n;
+  document.querySelectorAll('#sec-basic .chip').forEach(c => c.classList.remove('active'));
+  const btn = e ? (e.target || e.currentTarget) : (window.event ? (window.event.target || window.event.currentTarget) : null);
+  if (btn) btn.classList.add('active');
+}
+
+function showToast(msg, duration = 2000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), duration);
+}
+
+function addLink(anchor = '', url = '') {
+  const list = document.getElementById('links-list');
+  const item = document.createElement('div');
+  item.className = 'link-item';
+  item.innerHTML = `
+    <input type="text" placeholder="Anchor text..." value="${anchor}">
+    <input type="text" placeholder="/slug-url/" value="${url}">
+    <button class="remove-btn" onclick="this.parentElement.remove()">×</button>
+  `;
+  list.appendChild(item);
+}
+
+// ===== COLLECT FORM DATA =====
+function collectFormData() {
+  const links = [];
+  document.querySelectorAll('#links-list .link-item').forEach(item => {
+    const inputs = item.querySelectorAll('input');
+    const a = inputs[0].value.trim();
+    const u = inputs[1].value.trim();
+    if (a && u) links.push({ anchor: a, url: u });
+  });
+
+  return {
+    kwMain: document.getElementById('kw-main').value.trim(),
+    brand: document.getElementById('brand').value.trim(),
+    brandType: document.getElementById('brand-type').value.trim(),
+    wordCount: parseInt(document.getElementById('word-count').value) || 3000,
+    year: parseInt(document.getElementById('year').value) || 2026,
+    category: document.getElementById('category').value,
+    intent: document.getElementById('intent').value,
+    tone: document.getElementById('tone').value,
+    metaSuggest: document.getElementById('meta-suggest') ? document.getElementById('meta-suggest').value.trim() : '',
+    h1Direction: document.getElementById('h1-direction') ? document.getElementById('h1-direction').value.trim() : '',
+    kwSecondary: document.getElementById('kw-secondary').value.trim(),
+    kwLongtail: document.getElementById('kw-longtail').value.trim(),
+    kwSemantic: document.getElementById('kw-semantic').value.trim(),
+    kwEntity: document.getElementById('kw-entity').value.trim(),
+    kwGoodPhrase: document.getElementById('kw-good-phrase').value.trim(),
+    kwCumNenCo: document.getElementById('kw-cum-nen-co').value.trim(),
+    outline: document.getElementById('outline').value.trim(),
+    imgPlacement: document.getElementById('img-placement').value.trim(),
+    tableReq: document.getElementById('table-req').value.trim(),
+    humanWrite: document.getElementById('human-write').value.trim(),
+    antiAiRules: document.getElementById('anti-ai-rules').value.trim(),
+    tabooRules: document.getElementById('taboo-rules').value.trim(),
+    hasTable: isToggleOn('tog-table'),
+    hasFaq: isToggleOn('tog-faq'),
+    hasStep: isToggleOn('tog-step'),
+    hasAio: isToggleOn('tog-aio'),
+    hasRg: isToggleOn('tog-rg'),
+    links: links,
+    domainKnowledge: document.getElementById('domain-knowledge').value.trim(),
+    extraReq: document.getElementById('extra-req').value.trim()
+  };
+}
+
+// ===== GENERATE =====
+let currentOutputs = {};
+let currentTab = 'full';
+let viewMode = 'preview';
+
+function setViewMode(mode) {
+  viewMode = mode;
+  document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+  const activeBtn = document.getElementById(mode === 'preview' ? 'btn-view-preview' : 'btn-view-raw');
+  if (activeBtn) activeBtn.classList.add('active');
+  displayOutput(currentTab);
+}
+
+// Load stored API Key and model if any
+window.addEventListener('DOMContentLoaded', () => {
+  const savedKey = localStorage.getItem('gemini_api_key');
+  if (savedKey) {
+    const el = document.getElementById('api-key');
+    if (el) el.value = savedKey;
+  }
+  const savedModel = localStorage.getItem('gemini_selected_model');
+  if (savedModel) {
+    const modelEl = document.getElementById('gemini-model');
+    if (modelEl) {
+      // If the option exists, select it
+      for (let i = 0; i < modelEl.options.length; i++) {
+        if (modelEl.options[i].value === savedModel) {
+          modelEl.selectedIndex = i;
+          break;
+        }
+      }
+    }
+  }
+});
+
+function generatePrompt() {
+  const data = collectFormData();
+
+  // Validate
+  if (!data.kwMain) { showToast('⚠️ Vui lòng nhập Keyword chính!'); return; }
+  if (!data.brand) { showToast('⚠️ Vui lòng nhập Brand!'); return; }
+
+  // Generate all prompt variants + sample complete article
+  currentOutputs = {
+    full: buildFullPrompt(data),
+    article: buildSampleArticle(data),
+    outline: buildOutlineAgent(data),
+    writer: buildWriterAgent(data),
+    qa: buildQAAgent(data)
+  };
+
+  // Display current tab
+  displayOutput(currentTab);
+  showToast('✅ Đã tạo Prompt & Bài viết hoàn chỉnh!');
+}
+
+async function checkGeminiKey() {
+  const keyEl = document.getElementById('api-key');
+  const apiKey = keyEl ? keyEl.value.trim() : '';
+  const statusEl = document.getElementById('api-status-msg');
+
+  if (!apiKey) {
+    showToast('⚠️ Vui lòng dán API Key trước khi test!');
+    keyEl.focus();
+    return;
+  }
+
+  statusEl.style.display = 'block';
+  statusEl.innerHTML = '<span style="color:#f59e0b;">⏳ Đang kiểm tra API Key với Google AI Studio...</span>';
+
+  const result = await testGeminiKey(apiKey);
+
+  if (result.success) {
+    statusEl.innerHTML = `<span style="color:#22c55e;font-weight:600;">✅ Kết nối thành công! Key hợp lệ. Model tìm thấy: ${result.models.length} model.</span>`;
+    showToast('✅ API Key hợp lệ và sẵn sàng sử dụng!', 3000);
+
+    // Save key
+    localStorage.setItem('gemini_api_key', apiKey);
+
+    // Update select options if models returned
+    if (result.models && result.models.length) {
+      const select = document.getElementById('gemini-model');
+      select.innerHTML = '';
+
+      const priorityOrder = ['1.5-flash-8b', '2.0-flash', '1.5-flash', '2.0-flash-lite', '1.5-pro'];
+      const sortedModels = [...result.models].sort((a, b) => {
+        const idxA = priorityOrder.findIndex(p => a.includes(p));
+        const idxB = priorityOrder.findIndex(p => b.includes(p));
+        if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+        if (idxA !== -1) return -1;
+        if (idxB !== -1) return 1;
+        return a.localeCompare(b);
+      });
+
+      sortedModels.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m;
+        let badge = '';
+        if (m.includes('8b')) badge = ' ⚡ (Chống nghẽn tải - Khuyên dùng)';
+        else if (m.includes('2.0-flash')) badge = ' 🚀 (Thế hệ mới 2.0)';
+        else if (m.includes('1.5-flash')) badge = ' ⚡ (Bản chuẩn)';
+        else if (m.includes('pro')) badge = ' 🧠 (Sâu, chi tiết)';
+        opt.textContent = m + badge;
+        select.appendChild(opt);
+      });
+
+      const preferred = sortedModels.find(m => m.includes('1.5-flash-8b')) ||
+                        sortedModels.find(m => m.includes('2.0-flash')) ||
+                        sortedModels.find(m => m.includes('1.5-flash')) ||
+                        sortedModels[0];
+      if (preferred) select.value = preferred;
+    }
+  } else {
+    statusEl.innerHTML = `<div style="color:#ef4444;background:rgba(239,68,68,0.1);padding:8px 10px;border-radius:6px;border:1px solid rgba(239,68,68,0.3);line-height:1.5;">
+      <strong>❌ Lỗi kết nối Google API:</strong> ${escapeHtml(result.error)}<br><br>
+      <strong>💡 Cách sửa nhanh:</strong><br>
+      1. Vào <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#818cf8;text-decoration:underline;">aistudio.google.com/app/apikey</a> bằng Gmail cá nhân.<br>
+      2. Bấm <em>Create API key</em> ➔ Chọn <strong>"Create API key in NEW project"</strong> (tạo trong Dự án Mới).<br>
+      3. Dán mã key mới vào ô trên và bấm lại "Test Key".
+    </div>`;
+    showToast('❌ API Key bị lỗi từ phía Google Cloud!', 4000);
+  }
+}
+
+async function generateWithGeminiAI() {
+  const data = collectFormData();
+  if (!data.kwMain) { showToast('⚠️ Vui lòng nhập Keyword chính!'); return; }
+  if (!data.brand) { showToast('⚠️ Vui lòng nhập Brand!'); return; }
+
+  const keyEl = document.getElementById('api-key');
+  const apiKey = keyEl ? keyEl.value.trim() : '';
+  const model = document.getElementById('gemini-model').value || 'gemini-1.5-flash-8b';
+
+  if (!apiKey) {
+    showToast('⚠️ Vui lòng nhập Gemini API Key để viết tự động!');
+    document.getElementById('sec-ai').classList.remove('collapsed');
+    keyEl.focus();
+    return;
+  }
+
+  // Save key & chosen model
+  localStorage.setItem('gemini_api_key', apiKey);
+  localStorage.setItem('gemini_selected_model', model);
+
+  // Generate prompt first
+  currentOutputs = {
+    full: buildFullPrompt(data),
+    article: '⏳ Đang kết nối tới Gemini AI và tạo nội dung trực tiếp...\n\nVui lòng chờ trong giây lát...',
+    outline: buildOutlineAgent(data),
+    writer: buildWriterAgent(data),
+    qa: buildQAAgent(data)
+  };
+
+  // Switch to article tab
+  switchTab('article');
+  showToast('🤖 Gemini đang bắt đầu viết bài...');
+
+  const body = document.getElementById('output-body');
+  body.innerHTML = `<pre>⏳ Đang kết nối tới ${model}...\n\nĐang gửi yêu cầu và phân tích SEO...</pre>`;
+
+  await callGeminiApi(
+    currentOutputs.full,
+    apiKey,
+    model,
+    (chunk, fullText) => {
+      currentOutputs.article = fullText;
+      if (currentTab === 'article') {
+        body.innerHTML = `<pre>${escapeHtml(fullText)}</pre>`;
+        body.scrollTop = body.scrollHeight;
+      }
+    },
+    (fullText) => {
+      currentOutputs.article = fullText;
+      displayOutput('article');
+      showToast('🎉 Gemini đã viết xong bài hoàn chỉnh!');
+    },
+    (err) => {
+      showToast('❌ Gặp sự cố kết nối với AI!', 4000);
+      currentOutputs.article = `❌ Đã xảy ra lỗi khi gọi Gemini API:\n\n${err}\n\n` +
+        `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+        `💡 BẠN CÓ THỂ LẤY BÀI VIẾT HOÀN CHỈNH NGAY LẬP TỨC BẰNG CÁCH:\n` +
+        `👉 Bấm nút màu tím "⚡ Tạo Prompt & Viết Bài Mẫu Ngay" ở cột bên trái.\n` +
+        `Hệ thống sẽ tạo ngay bài viết hoàn chỉnh 3000 từ chuẩn SEO với đầy đủ H1, H2, H3, bảng so sánh và ảnh minh họa 100% offline mà không phụ thuộc vào máy chủ API!`;
+      displayOutput('article');
+    },
+    (statusMsg) => {
+      if (currentTab === 'article' && (!currentOutputs.article || currentOutputs.article.startsWith('⏳') || currentOutputs.article.startsWith('⚠️') || currentOutputs.article.startsWith('🔄'))) {
+        currentOutputs.article = statusMsg;
+        body.innerHTML = `<pre>${escapeHtml(statusMsg)}</pre>`;
+      }
+    }
+  );
+}
+
+function countActualWords(md) {
+  if (!md) return 0;
+  let text = md;
+  // Remove image lines
+  text = text.replace(/^!\[.*?\]\(.*?\)$/gm, '');
+  // Remove image captions
+  text = text.replace(/^\*Hình \d+:.*\*$/gm, '');
+  // Remove heading markers
+  text = text.replace(/^#{1,6}\s/gm, '');
+  // Remove table separators
+  text = text.replace(/^\|[-|:\s]+\|$/gm, '');
+  // Remove table pipes but keep cell content
+  text = text.replace(/\|/g, ' ');
+  // Remove horizontal rules
+  text = text.replace(/^---$/gm, '');
+  // Remove blockquote markers
+  text = text.replace(/^>\s?/gm, '');
+  // Remove bold/italic markers
+  text = text.replace(/\*\*/g, '').replace(/\*/g, '');
+  // Remove link syntax, keep text
+  text = text.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+  // Count words
+  const words = text.trim().split(/\s+/).filter(w => w.length > 0);
+  return words.length;
+}
+
+function displayOutput(tab) {
+  currentTab = tab;
+  const content = currentOutputs[tab] || '';
+  const body = document.getElementById('output-body');
+  const copyBtn = document.getElementById('copy-btn');
+  const statsBar = document.getElementById('stats-bar');
+  const viewToggle = document.getElementById('view-toggle');
+  const gdocsBtn = document.getElementById('gdocs-btn');
+  const docDownloadBtn = document.getElementById('doc-download-btn');
+
+  if (!content) {
+    body.innerHTML = `<div class="output-placeholder"><div class="big-icon">✨</div><p>Nhấn "Tạo Prompt" để bắt đầu</p></div>`;
+    copyBtn.style.display = 'none';
+    statsBar.style.display = 'none';
+    if (viewToggle) viewToggle.style.display = 'none';
+    if (gdocsBtn) gdocsBtn.style.display = 'none';
+    if (docDownloadBtn) docDownloadBtn.style.display = 'none';
+    return;
+  }
+
+  const data = collectFormData();
+
+  if (tab === 'article') {
+    if (viewToggle) viewToggle.style.display = 'inline-flex';
+    if (gdocsBtn) gdocsBtn.style.display = 'inline-flex';
+    if (docDownloadBtn) docDownloadBtn.style.display = 'inline-flex';
+    if (viewMode === 'preview') {
+      body.innerHTML = renderMarkdownToHtml(content, data);
+    } else {
+      body.innerHTML = `<pre>${escapeHtml(content)}</pre>`;
+    }
+  } else {
+    if (viewToggle) viewToggle.style.display = 'none';
+    if (gdocsBtn) gdocsBtn.style.display = 'none';
+    if (docDownloadBtn) docDownloadBtn.style.display = 'none';
+    body.innerHTML = `<pre>${escapeHtml(content)}</pre>`;
+  }
+
+  copyBtn.style.display = 'inline-flex';
+  statsBar.style.display = 'flex';
+
+  // Stats
+  const textContent = content.trim();
+  document.getElementById('stat-chars').textContent = textContent.length.toLocaleString();
+  document.getElementById('stat-words').textContent = countActualWords(content).toLocaleString();
+  const h2Count = (content.match(/^## /gm) || []).length;
+  document.getElementById('stat-h2').textContent = h2Count.toLocaleString();
+  document.getElementById('stat-target').textContent = data.wordCount.toLocaleString();
+
+  // Tab titles
+  const titles = { 
+    full: 'Full Prompt — Sẵn sàng paste vào Gemini/Claude', 
+    article: 'Bài viết hoàn chỉnh — Chuẩn SEO vGOD SENIOR 2026', 
+    outline: 'Outline Agent Prompt', 
+    writer: 'Writer Agent Prompt', 
+    qa: 'QA Agent Prompt' 
+  };
+  document.getElementById('output-title').textContent = titles[tab] || '';
+}
+
+function renderMarkdownToHtml(md, data) {
+  if (!md) return '';
+  const lines = md.split('\n');
+  let html = '<div class="rendered-article">';
+  let inTable = false;
+  let inList = false;
+  let inOrderedList = false;
+  let inBlockquote = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+
+    if (!line.startsWith('> ') && inBlockquote) {
+      inBlockquote = false;
+      html += '</blockquote>';
+    }
+
+    // Table rows
+    if (line.trim().startsWith('|') && line.trim().endsWith('|')) {
+      if (line.includes('---')) continue;
+      const cells = line.split('|').slice(1, -1).map(c => c.trim());
+      if (!inTable) {
+        inTable = true;
+        html += '<div style="overflow-x:auto;"><table><thead><tr>';
+        cells.forEach(c => { html += `<th>${formatInline(c)}</th>`; });
+        html += '</tr></thead><tbody>';
+      } else {
+        html += '<tr>';
+        cells.forEach(c => { html += `<td>${formatInline(c)}</td>`; });
+        html += '</tr>';
+      }
+      continue;
+    } else if (inTable) {
+      inTable = false;
+      html += '</tbody></table></div>';
+    }
+
+    // List items
+    if (line.trim().startsWith('- ') || line.trim().startsWith('• ')) {
+      const text = line.trim().substring(2);
+      if (!inList) { inList = true; html += '<ul>'; }
+      html += `<li>${formatInline(text)}</li>`;
+      continue;
+    } else if (inList) {
+      inList = false;
+      html += '</ul>';
+    }
+
+    // Numbered list items
+    const numberedMatch = line.trim().match(/^(\d+)\.\s+(.+)/);
+    if (numberedMatch) {
+      const text = numberedMatch[2];
+      if (!inOrderedList) { inOrderedList = true; html += '<ol>'; }
+      html += `<li>${formatInline(text)}</li>`;
+      continue;
+    } else if (inOrderedList) {
+      inOrderedList = false;
+      html += '</ol>';
+    }
+
+    // Empty line
+    if (!line.trim()) continue;
+
+    // H1 (# Title)
+    if (line.startsWith('# ')) {
+      const text = line.substring(2).trim();
+      html += `<h1 class="art-h1"><span class="tag">H1</span> ${escapeHtml(text)}</h1>`;
+      continue;
+    }
+
+    // H2 (## Title)
+    if (line.startsWith('## ')) {
+      const text = line.substring(3).trim();
+      html += `<h2 class="art-h2"><span class="tag">H2</span> ${escapeHtml(text)}</h2>`;
+      continue;
+    }
+
+    // H3 (### Title)
+    if (line.startsWith('### ')) {
+      const text = line.substring(4).trim();
+      html += `<h3 class="art-h3"><span class="tag">H3</span> ${escapeHtml(text)}</h3>`;
+      continue;
+    }
+
+    // Image & Image Caption
+    const imgMatch = line.trim().match(/^!\[(.*?)\]\((.*?)\)$/);
+    if (imgMatch) {
+      const alt = imgMatch[1];
+      const url = imgMatch[2];
+      let caption = '';
+      if (i + 1 < lines.length && lines[i + 1].trim().startsWith('*Hình')) {
+        caption = lines[i + 1].trim().replace(/^\*|\*$/g, '');
+        i++;
+      }
+      html += `
+        <div class="art-img-box">
+          <div class="art-img-preview">
+            <span class="icon">🖼️</span>
+            <div>
+              <div class="art-img-alt"><strong>Thuộc tính Alt:</strong> "${escapeHtml(alt)}"</div>
+              <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">📁 Tên file: ${escapeHtml(url)}</div>
+            </div>
+          </div>
+          ${caption ? `<div class="art-img-caption">📸 ${escapeHtml(caption)}</div>` : ''}
+        </div>
+      `;
+      continue;
+    }
+
+    // Blockquote
+    if (line.startsWith('> ')) {
+      const text = line.substring(2).trim();
+      if (!inBlockquote) {
+        inBlockquote = true;
+        html += '<blockquote>';
+      }
+      html += `<p>${formatInline(text)}</p>`;
+      continue;
+    }
+
+    // Horizontal Rule
+    if (line.trim() === '---') {
+      html += '<hr style="border:none;border-top:1px solid var(--border);margin:20px 0;">';
+      continue;
+    }
+
+    // Normal paragraph
+    html += `<p>${formatInline(line)}</p>`;
+  }
+
+  if (inTable) html += '</tbody></table></div>';
+  if (inList) html += '</ul>';
+  if (inOrderedList) html += '</ol>';
+  if (inBlockquote) html += '</blockquote>';
+  html += '</div>';
+
+  return boldKeywordsInHtml(html, data);
+}
+
+function formatInline(str) {
+  let s = escapeHtml(str);
+  s = s.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  s = s.replace(/\*(.*?)\*/g, '<em>$1</em>');
+  s = s.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>');
+  return s;
+}
+
+// ===================================================================
+// KEYWORD BOLDING ENGINE FOR GOOGLE DOCS & WEB
+// Automatically bolds all primary and secondary keywords in content
+// ===================================================================
+
+function boldKeywordsInHtml(html, data) {
+  if (!html || !data) return html;
+
+  // Collect keywords from all available inputs
+  const kwList = [];
+  
+  const extractKws = (text) => {
+    if (!text) return;
+    // Tách bằng xuống dòng, dấu phẩy, hoặc dấu chấm phẩy
+    text.split(/[\n,;]+/).forEach(k => {
+      // Loại bỏ gạch đầu dòng, khoảng trắng thừa
+      const clean = k.trim().replace(/^[\s•·-]+/, '').trim();
+      if (clean && clean.length >= 3) kwList.push(clean);
+    });
+  };
+
+  extractKws(data.kwMain);
+  extractKws(data.kwSecondary);
+  extractKws(data.kwLongtail);
+  extractKws(data.kwSemantic);
+  extractKws(data.kwEntity);
+  extractKws(data.kwGoodPhrase);
+  extractKws(data.kwCumNenCo);
+
+  // Remove duplicates & filter out short tokens
+  const uniqueKws = Array.from(new Set(kwList)).filter(k => k && k.length >= 3);
+  // Sort longest first to avoid partial replacement of substrings
+  uniqueKws.sort((a, b) => b.length - a.length);
+
+  if (uniqueKws.length === 0) return html;
+
+  // Use DOM container to safely traverse only text nodes
+  const container = document.createElement('div');
+  container.innerHTML = html;
+
+  const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
+  const textNodes = [];
+
+  while (walker.nextNode()) {
+    const node = walker.currentNode;
+    // Don't bold if already inside strong, b, code, style, script, headings, or image placeholder box
+    if (node.parentElement && node.parentElement.closest('strong, b, code, style, script, h1, h2, h3, .art-img-box')) {
+      continue;
+    }
+    if (!node.nodeValue || !node.nodeValue.trim()) {
+      continue;
+    }
+    textNodes.push(node);
+  }
+
+  const escaped = uniqueKws.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  const regex = new RegExp('(' + escaped.join('|') + ')', 'gi');
+
+  textNodes.forEach(node => {
+    const text = node.nodeValue;
+    if (regex.test(text)) {
+      regex.lastIndex = 0;
+      const span = document.createElement('span');
+      span.innerHTML = text.replace(regex, '<strong style="font-weight:bold;">$1</strong>');
+      node.replaceWith(...span.childNodes);
+    }
+  });
+
+  return container.innerHTML;
+}
+
+// ===================================================================
+// GOOGLE DOCS EXPORT & RICH FORMATTING ENGINE
+// ===================================================================
+
+function convertMarkdownForGoogleDocs(md, data) {
+  if (!md) return '';
+  const lines = md.split('\n');
+  let html = '';
+  let inTable = false;
+  let inList = false;
+  let inOrderedList = false;
+  let inBlockquote = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+
+    if (!line.startsWith('> ') && inBlockquote) {
+      inBlockquote = false;
+      html += '</blockquote>';
+    }
+
+    // Table rows
+    if (line.trim().startsWith('|') && line.trim().endsWith('|')) {
+      if (line.includes('---')) continue;
+      const cells = line.split('|').slice(1, -1).map(c => c.trim());
+      if (!inTable) {
+        inTable = true;
+        html += '<table border="1" cellpadding="8" cellspacing="0" style="border-collapse:collapse;width:100%;margin:16px 0;font-family:Arial,sans-serif;font-size:10.5pt;"><thead><tr style="background-color:#1e1b4b;color:#ffffff;">';
+        cells.forEach(c => { html += `<th style="border:1px solid #cbd5e1;padding:8px 10px;text-align:left;color:#ffffff;">${formatInline(c)}</th>`; });
+        html += '</tr></thead><tbody>';
+      } else {
+        html += '<tr>';
+        cells.forEach(c => { html += `<td style="border:1px solid #cbd5e1;padding:8px 10px;color:#1e293b;">${formatInline(c)}</td>`; });
+        html += '</tr>';
+      }
+      continue;
+    } else if (inTable) {
+      inTable = false;
+      html += '</tbody></table>';
+    }
+
+    // List items
+    if (line.trim().startsWith('- ') || line.trim().startsWith('• ')) {
+      const text = line.trim().substring(2);
+      if (!inList) { inList = true; html += '<ul style="margin:10px 0;padding-left:24px;">'; }
+      html += `<li style="font-size:11pt;line-height:1.7;margin-bottom:4px;">${formatInline(text)}</li>`;
+      continue;
+    } else if (inList) {
+      inList = false;
+      html += '</ul>';
+    }
+
+    // Numbered list items
+    const numberedMatch = line.trim().match(/^(\d+)\.\s+(.+)/);
+    if (numberedMatch) {
+      const text = numberedMatch[2];
+      if (!inOrderedList) { inOrderedList = true; html += '<ol style="margin:10px 0;padding-left:24px;">'; }
+      html += `<li style="font-size:11pt;line-height:1.7;margin-bottom:4px;">${formatInline(text)}</li>`;
+      continue;
+    } else if (inOrderedList) {
+      inOrderedList = false;
+      html += '</ol>';
+    }
+
+    // Empty line
+    if (!line.trim()) continue;
+
+    // H1 (# Title)
+    if (line.startsWith('# ')) {
+      const text = line.substring(2).trim();
+      html += `<h1 style="font-family:Arial,sans-serif;font-size:22pt;color:#1e1b4b;margin-top:20pt;margin-bottom:12pt;font-weight:bold;line-height:1.3;">${escapeHtml(text)}</h1>`;
+      continue;
+    }
+
+    // H2 (## Title)
+    if (line.startsWith('## ')) {
+      const text = line.substring(3).trim();
+      html += `<h2 style="font-family:Arial,sans-serif;font-size:16pt;color:#2563eb;margin-top:18pt;margin-bottom:8pt;font-weight:bold;border-bottom:1pt solid #cbd5e1;padding-bottom:4pt;">${escapeHtml(text)}</h2>`;
+      continue;
+    }
+
+    // H3 (### Title)
+    if (line.startsWith('### ')) {
+      const text = line.substring(4).trim();
+      html += `<h3 style="font-family:Arial,sans-serif;font-size:13pt;color:#334155;margin-top:14pt;margin-bottom:6pt;font-weight:bold;">${escapeHtml(text)}</h3>`;
+      continue;
+    }
+
+    // Image & Image Caption
+    const imgMatch = line.trim().match(/^!\[(.*?)\]\((.*?)\)$/);
+    if (imgMatch) {
+      const alt = imgMatch[1];
+      const url = imgMatch[2];
+      let caption = '';
+      if (i + 1 < lines.length && lines[i + 1].trim().startsWith('*Hình')) {
+        caption = lines[i + 1].trim().replace(/^\*|\*$/g, '');
+        i++;
+      }
+      html += `
+        <table border="1" cellpadding="8" cellspacing="0" style="border:1px dashed #6366f1;background-color:#f8fafc;width:100%;margin:16px 0;">
+          <tr>
+            <td style="text-align:center;padding:12px;">
+              <p style="margin:0 0 4px 0;font-size:11.5pt;font-weight:bold;color:#1e1b4b;">🖼️ [Hình ảnh minh họa: ${caption ? escapeHtml(caption) : escapeHtml(alt)}]</p>
+              <p style="margin:0;font-size:10pt;color:#64748b;font-style:italic;">Thuộc tính Alt: "${escapeHtml(alt)}" | Tên file: ${escapeHtml(url)}</p>
+            </td>
+          </tr>
+        </table>
+      `;
+      continue;
+    }
+
+    // Blockquote
+    if (line.startsWith('> ')) {
+      const text = line.substring(2).trim();
+      if (!inBlockquote) {
+        inBlockquote = true;
+        html += `<blockquote style="border-left:4px solid #6366f1;background-color:#f1f5f9;padding:10px 14px;margin:14px 0;font-size:11pt;color:#1e293b;">`;
+      }
+      html += `<p style="margin:0;">${formatInline(text)}</p>`;
+      continue;
+    }
+
+    // Horizontal Rule
+    if (line.trim() === '---') {
+      html += '<hr style="border:none;border-top:1px solid #cbd5e1;margin:20px 0;">';
+      continue;
+    }
+
+    // Normal paragraph
+    html += `<p style="font-family:Arial,sans-serif;font-size:11pt;line-height:1.7;margin-bottom:10pt;color:#1e293b;text-align:justify;">${formatInline(line)}</p>`;
+  }
+
+  if (inTable) html += '</tbody></table>';
+  if (inList) html += '</ul>';
+  if (inOrderedList) html += '</ol>';
+  if (inBlockquote) html += '</blockquote>';
+
+  return boldKeywordsInHtml(html, data);
+}
+
+async function exportToGoogleDocs() {
+  const content = currentOutputs['article'];
+  if (!content) {
+    showToast('⚠️ Vui lòng tạo bài viết trước!');
+    return;
+  }
+
+  const data = collectFormData();
+  const gdocsHtml = convertMarkdownForGoogleDocs(content, data);
+
+  let success = false;
+  if (navigator.clipboard && window.ClipboardItem) {
+    try {
+      const blobHtml = new Blob([gdocsHtml], { type: 'text/html' });
+      const blobText = new Blob([content], { type: 'text/plain' });
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          'text/html': blobHtml,
+          'text/plain': blobText
+        })
+      ]);
+      success = true;
+    } catch (err) {
+      console.warn('ClipboardItem error, falling back:', err);
+    }
+  }
+
+  if (!success) {
+    fallbackCopyRichText(gdocsHtml);
+  }
+
+  // Open brand new Google Doc
+  window.open('https://docs.new', '_blank');
+
+  showToast('🚀 Đang mở Google Docs! Hãy nhấn Ctrl + V trên trang mới để dán bài với đầy đủ H1, H2, H3!', 5000);
+}
+
+function fallbackCopyRichText(html) {
+  const container = document.createElement('div');
+  container.innerHTML = html;
+  container.style.position = 'fixed';
+  container.style.left = '-9999px';
+  document.body.appendChild(container);
+  
+  const range = document.createRange();
+  range.selectNodeContents(container);
+  const selection = window.getSelection();
+  selection.removeAllRanges();
+  selection.addRange(range);
+  
+  try {
+    document.execCommand('copy');
+  } catch (err) {
+    console.error('fallbackCopyRichText error:', err);
+  }
+  
+  selection.removeAllRanges();
+  document.body.removeChild(container);
+}
+
+function downloadDocFile() {
+  const content = currentOutputs['article'];
+  if (!content) {
+    showToast('⚠️ Vui lòng tạo bài viết trước!');
+    return;
+  }
+
+  const data = collectFormData();
+  const title = (data.kwMain || 'bai-viet-seo').replace(/\s+/g, '-');
+  const gdocsBody = convertMarkdownForGoogleDocs(content, data);
+
+  const fullHtml = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>${escapeHtml(data.kwMain || 'Bài viết SEO')}</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; color: #1e293b; line-height: 1.7; }
+    h1 { font-size: 22pt; color: #1e1b4b; margin-bottom: 12pt; }
+    h2 { font-size: 16pt; color: #2563eb; margin-top: 18pt; margin-bottom: 8pt; border-bottom: 1pt solid #cbd5e1; padding-bottom: 4pt; }
+    h3 { font-size: 13pt; color: #334155; margin-top: 14pt; margin-bottom: 6pt; }
+    p { font-size: 11pt; margin-bottom: 10pt; text-align: justify; }
+    table { border-collapse: collapse; width: 100%; margin: 16px 0; }
+    th, td { border: 1px solid #cbd5e1; padding: 8px 10px; font-size: 10.5pt; text-align: left; }
+    th { background: #1e1b4b; color: #ffffff; }
+    blockquote { border-left: 4px solid #6366f1; background: #f1f5f9; padding: 10px 14px; margin: 14px 0; }
+  </style>
+</head>
+<body>
+${gdocsBody}
+</body>
+</html>`;
+
+  const blob = new Blob(['\ufeff' + fullHtml], { type: 'application/msword;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${title}-${data.brand || 'seo'}.doc`;
+  a.click();
+  showToast('📥 Đã tải file tài liệu .doc giữ nguyên H1, H2, H3!', 3000);
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  const tabs = ['full', 'article', 'outline', 'writer', 'qa'];
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    b.classList.toggle('active', tabs[i] === tab);
+  });
+  if (currentOutputs[tab]) displayOutput(tab);
+}
+
+function copyOutput() {
+  const text = currentOutputs[currentTab];
+  if (!text) return;
+
+  const showSuccess = () => {
+    const btn = document.getElementById('copy-btn');
+    btn.classList.add('copied');
+    btn.innerHTML = '✅ Đã copy!';
+    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = '📋 Copy'; }, 1500);
+    showToast('📋 Đã copy nội dung vào clipboard!');
+  };
+
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(showSuccess).catch(() => {
+      fallbackCopy(text);
+      showSuccess();
+    });
+  } else {
+    fallbackCopy(text);
+    showSuccess();
+  }
+}
+
+function fallbackCopy(text) {
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.style.position = 'fixed';
+  textarea.style.opacity = '0';
+  document.body.appendChild(textarea);
+  textarea.select();
+  try {
+    document.execCommand('copy');
+  } catch (err) {
+    console.error('Fallback copy error:', err);
+  }
+  document.body.removeChild(textarea);
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ===== SAVE / LOAD =====
+function saveConfig() {
+  const data = collectFormData();
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], {type: 'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `seo-config-${data.kwMain.replace(/\s+/g,'-') || 'draft'}.json`;
+  a.click();
+  showToast('💾 Config đã lưu!');
+}
+
+function loadConfig() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        populateForm(data);
+        showToast('📂 Config đã load!');
+      } catch { showToast('⚠️ File JSON không hợp lệ!'); }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+function populateForm(d) {
+  if (d.kwMain) document.getElementById('kw-main').value = d.kwMain;
+  if (d.brand) document.getElementById('brand').value = d.brand;
+  if (d.brandType) document.getElementById('brand-type').value = d.brandType;
+  if (d.wordCount) document.getElementById('word-count').value = d.wordCount;
+  if (d.year) document.getElementById('year').value = d.year;
+  if (d.category) document.getElementById('category').value = d.category;
+  if (d.intent) document.getElementById('intent').value = d.intent;
+  if (d.tone) document.getElementById('tone').value = d.tone;
+  if (d.kwSecondary) document.getElementById('kw-secondary').value = d.kwSecondary;
+  if (d.kwLongtail) document.getElementById('kw-longtail').value = d.kwLongtail;
+  if (d.outline) document.getElementById('outline').value = d.outline;
+  if (d.outlineNotes) document.getElementById('outline-notes').value = d.outlineNotes;
+  if (d.ctvNotes) document.getElementById('ctv-notes').value = d.ctvNotes;
+  if (d.kwGuide) document.getElementById('kw-guide').value = d.kwGuide;
+  if (d.domainKnowledge) document.getElementById('domain-knowledge').value = d.domainKnowledge;
+  if (d.extraReq) document.getElementById('extra-req').value = d.extraReq;
+
+  // Toggles
+  if (d.hasTable !== undefined) d.hasTable ? document.getElementById('tog-table').classList.add('active') : document.getElementById('tog-table').classList.remove('active');
+  if (d.hasFaq !== undefined) d.hasFaq ? document.getElementById('tog-faq').classList.add('active') : document.getElementById('tog-faq').classList.remove('active');
+  if (d.hasStep !== undefined) d.hasStep ? document.getElementById('tog-step').classList.add('active') : document.getElementById('tog-step').classList.remove('active');
+  if (d.hasAio !== undefined) d.hasAio ? document.getElementById('tog-aio').classList.add('active') : document.getElementById('tog-aio').classList.remove('active');
+  if (d.hasRg !== undefined) d.hasRg ? document.getElementById('tog-rg').classList.add('active') : document.getElementById('tog-rg').classList.remove('active');
+
+  // Phrases
+  document.getElementById('phrases-list').innerHTML = '';
+  if (d.phrases && d.phrases.length) {
+    d.phrases.forEach(p => addPhrase(p.phrase, p.priority));
+  }
+
+  // Links
+  document.getElementById('links-list').innerHTML = '';
+  if (d.links && d.links.length) {
+    d.links.forEach(l => addLink(l.anchor, l.url));
+  }
+}
+
+function resetForm() {
+  if (!confirm('Bạn có chắc muốn reset toàn bộ form?')) return;
+  document.querySelectorAll('input[type="text"], textarea').forEach(el => el.value = '');
+  document.getElementById('word-count').value = 3000;
+  document.getElementById('year').value = 2026;
+  document.getElementById('phrases-list').innerHTML = '';
+  document.getElementById('links-list').innerHTML = '';
+  initDefaults();
+  currentOutputs = {};
+  displayOutput('full');
+  showToast('🗑️ Form đã reset!');
+}
+</script>
+</body>
+</html>
